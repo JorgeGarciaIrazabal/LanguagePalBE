@@ -1,0 +1,25 @@
+version: '3'
+services:
+  test_db:
+    image: postgres
+    ports:
+    - "25433:5432"
+    environment:
+      POSTGRES_USER: pal
+      POSTGRES_PASSWORD: pal
+      POSTGRES_DB: test_pal
+  db:
+    image: postgres
+    ports:
+    - "25432:5432"
+    environment:
+      POSTGRES_USER: pal
+      POSTGRES_PASSWORD: pal
+      POSTGRES_DB: pal
+    volumes:
+    - ../language_pal_be_db:/var/lib/postgresql/data
+  redis:
+    image: redis
+    ports:
+    - "26379:6379"
+    entrypoint: redis-server

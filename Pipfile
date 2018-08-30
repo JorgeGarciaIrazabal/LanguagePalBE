@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "laguage_pal_backend"
+
+[dev-packages]
+
+[packages]
+django = "*"
+"psycopg2" = "*"
+"psycopg2-binary" = "*"
+markdown = "*"
+django-filter = "*"
+django-test-plus = ">=1.1.0,<1.2.0"
+django-dynamic-fixture = ">=2.0.0,<2.1.0"
+ajson = ">=0.10.0,<0.11.0"
+PyJWT = ">=1.6.0,<1.7.0"
+djangorestframework = "*"
+
+[requires]
+python_version = "3.6"
