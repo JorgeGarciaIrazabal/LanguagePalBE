@@ -1,7 +1,7 @@
 ### cards ping
-GET {{host}}/cards/
+GET {{host}}:8000/ping/
 Accept: application/json/
-Authorization: Bearer {{access_token}}
+
 
 ### login
 POST {{host}}/auth/login/
@@ -33,6 +33,7 @@ Content-Type: application/json
 
 ### cards
 GET {{host}}/cards
+Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 ### single card
