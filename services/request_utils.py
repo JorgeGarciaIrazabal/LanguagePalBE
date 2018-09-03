@@ -1,3 +1,5 @@
+import os
+
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from language_pal_be.authentication import TokenAuthentication
@@ -14,6 +16,8 @@ def is_upload_file(func):
 
 
 def save_in_memory_file(f: InMemoryUploadedFile, path: str):
+    folder_path = os.path.dirname(os.path.abspath(path))
+    os.makedirs(folder_path, exist_ok=True)
     with open(path, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)

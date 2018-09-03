@@ -9,11 +9,13 @@ class User(models.Model):
     id: int
     ''' @aj(groups='["user_basic","user_detailed"]') '''
 
-    first_name: str = models.CharField(max_length=30, blank=True)
+    first_name: str = models.CharField(max_length=30, null=True)
     ''' @aj(groups='["user_basic","user_detailed"]') '''
-    last_name: str = models.CharField(max_length=150, blank=True)
+    last_name: str = models.CharField(max_length=150, null=True)
     ''' @aj(groups='["user_basic","user_detailed"]') '''
     email: str = models.EmailField(blank=False, unique=True)
+    ''' @aj(groups='["user_basic","user_detailed"]') '''
+    photo_path: str = models.CharField(max_length=300, null=True)
     ''' @aj(groups='["user_basic","user_detailed"]') '''
     is_admin = models.BooleanField(
         default=False,
@@ -21,7 +23,7 @@ class User(models.Model):
     )
     ''' @aj(groups='["user_detailed"]') '''
 
-    password: str = models.CharField(max_length=150, blank=True)
+    password: str = models.CharField(max_length=150)
     ''' @aj(groups='[]') '''
 
     created_at: datetime = models.DateTimeField(auto_now_add=True)

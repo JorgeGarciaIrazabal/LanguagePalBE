@@ -1,13 +1,15 @@
+import os
 import uuid
 
 from ajson import ASerializer
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import JsonResponse
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404, ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, get_object_or_404
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 
-from courses.models import Course, Student, Card, UpdateCard
+from courses.models import Card, Course, Student, UpdateCard
 from lp_auth.models import User
 from lp_auth.permissions import IsRegular
 from services.request_utils import is_upload_file, save_in_memory_file
@@ -116,8 +118,8 @@ class CardsView(ListCreateAPIView):
 
     def create(self, request: Request, course_id: int):
         card: Card = ASerializer().from_dict(request.data, Card)
-        card.user = request.user
-        card.course = Course.get_or_404(pk=request.data['course_id'], user=request.user)
+        card.creator = request.user
+        card.course = Course.get_or_404(pk=course_id, user=request.user)
         card.save()
         return JsonResponse({
             "data": ASerializer().to_dict(card, groups=['card_detailed'])
@@ -153,11 +155,24 @@ class CardView(RetrieveUpdateAPIView):
 
     @staticmethod
     @is_upload_file
-    def upload_card_sound(request: Request, file, course_id: int, pk: int):
+    def upload_card_translation_sound(request: Request, file: InMemoryUploadedFile, course_id: int, pk: int):
         # todo add security here
-        card: Card = get_object_or_404(Card, pk=pk, user=request.user)
-        path = f'static/cards/sound_id_{uuid.uuid4()}_{pk}.m4a'
-        card.sound_path = path
+        card: Card = get_object_or_404(Card, pk=pk, creator=request.user)
+        _, ext = os.path.splitext(file.name)
+        path = f'static/cards/translation_sound_id_{uuid.uuid4()}_{pk}{ext}'
+        card.translation_sound_path = path
         save_in_memory_file(file, path)
         card.save()
-        return JsonResponse({"success": True})
+        return JsonResponse({"data": ASerializer().to_dict(card, groups=['card_detailed'])})
+
+    @staticmethod
+    @is_upload_file
+    def upload_card_sentence_sound(request: Request, file, course_id: int, pk: int):
+        # todo add security here
+        card: Card = get_object_or_404(Card, pk=pk, creator=request.user)
+        _, ext = os.path.splitext(file.name)
+        path = f'static/cards/sentence_sound_id_{uuid.uuid4()}_{pk}{ext}'
+        card.sentence_sound_path = path
+        save_in_memory_file(file, path)
+        card.save()
+        return JsonResponse({"data": ASerializer().to_dict(card, groups=['card_detailed'])})

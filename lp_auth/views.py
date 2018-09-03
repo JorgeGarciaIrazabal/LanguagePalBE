@@ -1,3 +1,5 @@
+import os
+import uuid
 from datetime import datetime, timedelta
 from typing import Tuple
 
@@ -11,6 +13,7 @@ from language_pal_be import settings
 from lp_auth.models import User
 from lp_auth.permissions import IsAnonymous
 from lp_auth.types import LoginBody
+from services.request_utils import is_upload_file, save_in_memory_file
 
 
 @api_view(['post'])
@@ -51,3 +54,14 @@ def login_from_params(email: str, password: str) -> Tuple[str, User]:
     user = User.objects.get(email=email, password=password)
     jwt_token = __construct_token(user)
     return jwt_token, user
+
+
+@is_upload_file
+def upload_photo(request: Request, file):
+    user = request.user
+    _, ext = os.path.splitext(file.name)
+    path = f'static/users/photo_id_{uuid.uuid4()}_{user.id}{ext}'
+    save_in_memory_file(file, path)
+    user.photo_path = path
+    user.save()
+    return JsonResponse({"data": ASerializer().to_dict(user, groups=['user_detailed'])})

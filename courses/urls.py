@@ -12,6 +12,9 @@ urlpatterns = [
     path('courses/<int:course_id>/students/<int:pk>', views.StudentView.as_view(), name='student'),
     path('courses/<int:course_id>/cards/', views.CardsView.as_view(), name='cards'),
     path('courses/<int:course_id>/cards/<int:pk>', views.CardView.as_view(), name='card'),
-    path('courses/<int:course_id>/cards/<int:pk>/upload-sound', views.CardView.upload_card_sound, name='card'),
+    path('courses/<int:course_id>/cards/<int:pk>/upload-translation-sound',
+         views.CardView.upload_card_translation_sound, name='card-upload-translation-sound'),
+    path('courses/<int:course_id>/cards/<int:pk>/upload-sentence-sound', views.CardView.upload_card_sentence_sound,
+         name='card-upload-sentence-sound', ),
 ]
 urlpatterns += router.urls
